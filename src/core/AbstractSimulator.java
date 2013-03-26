@@ -7,6 +7,7 @@ abstract public class AbstractSimulator {
 
 	private final List<ISimulationListener> listeners = new CopyOnWriteArrayList<ISimulationListener>();
 	private final Thread thread;
+	private boolean started = false;
 	private volatile boolean running = false;
 	private volatile long simulationDelay = 25;
 
@@ -22,10 +23,13 @@ abstract public class AbstractSimulator {
 				}
 			}
 		};
-		thread.start();
 	}
 
 	public synchronized void start() {
+		if (!started) {			
+			thread.start();
+			started = true;
+		}
 		running = true;
 		notify();
 		notifySimulationStarted();
