@@ -54,10 +54,18 @@ abstract public class AbstractSimulator {
 	}
 
 	public void addSimulationListener(ISimulationListener listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("listener must not be null");
+		}
+
 		listeners.add(listener);
 	}
 	
 	public void removeSimulationListener(ISimulationListener listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("listener must not be null");
+		}
+
 		listeners.remove(listener);
 	}
 	
@@ -66,6 +74,10 @@ abstract public class AbstractSimulator {
 	}
 
 	public synchronized void setSimulationDelay(long simulationDelay) {
+		if (simulationDelay < 0) {
+			throw new IllegalArgumentException("simulationDelay must not be < 0");
+		}
+		
 		this.simulationDelay = simulationDelay;
 	}
 
@@ -84,5 +96,11 @@ abstract public class AbstractSimulator {
 		}
 	}
 
-	abstract protected void simulate();
+	protected void simulate() {
+		for (IActionable actionable : getActionables()) {
+			actionable.act();
+		}
+	}
+
+	protected abstract Iterable<? extends IActionable> getActionables();
 }

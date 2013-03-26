@@ -10,6 +10,8 @@ public abstract class AbstractVisualizer extends JPanel {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		assert g != null;
+		
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D) g;

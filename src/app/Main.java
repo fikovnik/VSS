@@ -16,22 +16,24 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import model.Car;
-import ui.Visualizer;
+import ui.AbstractVisualizer;
+import ui.IDrawable;
+import core.AbstractSimulator;
+import core.IActionable;
 import core.ISimulationListener;
-import core.Simulator;
 
 @SuppressWarnings("serial")
 public class Main extends JFrame {
 
-	private final Visualizer visualizer;
-	private final Simulator simulator;
+	private final AbstractVisualizer visualizer;
+	private final AbstractSimulator simulator;
 
 	private final JButton btnStart;
 	private final JButton btnStop;
 	private final JButton btnExit;
 	private final JLabel lblStatus;
 
-	public Main(Collection<Car> cars) {
+	public Main(final Collection<Car> cars) {
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -68,7 +70,13 @@ public class Main extends JFrame {
 		lblStatus = new JLabel();
 		add(lblStatus, BorderLayout.SOUTH);
 
-		simulator = new Simulator(cars);
+		simulator = new AbstractSimulator() {
+			@Override
+			protected Iterable<? extends IActionable> getActionables() {
+				return cars;
+			}
+		};
+		
 		simulator.addSimulationListener(new ISimulationListener() {
 
 			@Override
@@ -87,7 +95,13 @@ public class Main extends JFrame {
 			}
 		});
 
-		visualizer = new Visualizer(cars);
+		visualizer = new AbstractVisualizer() {	
+			@Override
+			protected Iterable<? extends IDrawable> getDrawables() {
+				return cars;
+			}
+		};
+		
 		add(visualizer, BorderLayout.CENTER);
 
 		handleSimulationStateChange(false);
